@@ -1,0 +1,56 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./banco-mexicano.html">
+<link rel="import" href="./banco-chino.html">
+<link rel="import" href="./banco-japones.html">
+
+<dom-module id="banco-polymer">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <banco-mexicano transaction="{{transaction}}" balance="{{balance}}" on-updatereport="handleEvent"></banco-mexicano>
+    <banco-chino transaction="{{transaction}}" balance="{{balance}}" on-updatereport="handleEvent"></banco-chino>
+    <banco-japones transaction="{{transaction}}" balance="{{balance}}" on-updatereport="handleEvent"></banco-japones>
+
+    <h4>Historial de transacciones</h4>
+
+    <template is="dom-repeat" items="[[log]]" as="transaction">
+      <p>[[transaction.transaction]]</p>
+      <p>[[transaction.balance]]</p>
+    </template>
+  </template>
+
+  <script>
+    /**
+     * `banco-polymer`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BancoPolymer extends Polymer.Element {
+      static get is() { return 'banco-polymer'; }
+      static get properties() {
+        return {
+          log: {
+            type: Array,
+            value() {
+              return []
+            }
+          },
+        };
+      }
+
+      handleEvent(event) {
+        console.log(event.detail.transaction)
+        console.log(event.detail.balance)
+        this.push('log', { transaction: this.transaction, balance: this.balance })
+      }
+
+    }
+    window.customElements.define(BancoPolymer.is, BancoPolymer);
+  </script>
+</dom-module>

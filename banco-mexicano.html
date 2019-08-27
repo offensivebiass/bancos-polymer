@@ -1,0 +1,96 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="banco-mexicano">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>[[banco]]</h2>
+    <input type="number" placeholder="$$" value="{{monto::input}}">
+    <button on-click="depositarDinero">Depositar</button>
+    <button on-click="retirarDinero">Retirar</button>
+
+    <h3 class="saldo">Saldo de la cuenta: $ [[balance]]</h3>
+  </template>
+
+  <script>
+    /**
+     * `banco-mexicano`
+     * 
+     *
+     * @customElement
+     * @polyme
+     * @demo demo/index.html
+     */
+    class BancoMexicano extends Polymer.Element {
+      static get is() { return 'banco-mexicano'; }
+      static get properties() {
+        return {
+          banco: {
+            type: String,
+            value: 'Banco Mexicano'
+          },
+          minAmount: {
+            type: Number,
+            value: 100
+          },
+          maxAmount: {
+            type: Number,
+            value: 10000
+          },
+          balance: {
+            type: Number,
+            value: 0
+          },
+          transaction: {
+            type: String,
+            value: '',
+            notify: true
+          }
+        };
+      }
+
+      depositarDinero() {
+        if (this.monto < this.minAmount) {
+          this.transaction = 'El monto es menor a la cantidad minima del ' + this.banco + ''
+        } else if (this.monto > this.maxAmount) {
+          this.transaction = 'El monto es mayor a los limites del ' + this.banco + ''
+        } else {
+          this.transaction = 'Se depositaron $' + this.monto + ' Pesos al ' + this.banco + ''
+          this.balance += parseInt(this.monto)
+        }
+        console.log(this.transaction)
+        this.updateReport()
+      }
+
+      retirarDinero() {
+        if (this.monto < this.minAmount) {
+          this.transaction = 'El monto es menor a la cantidad minima del ' + this.banco + ''
+        } else if (this.monto > this.maxAmount) {
+          this.transaction = 'El monto es mayor a los limites del ' + this.banco + ''
+        } else if (this.monto > this.balance) {
+          this.transaction = 'El monto es mayor al saldo en el ' + this.banco + ''
+        } else {
+          this.transaction = 'Se retiraron $' + this.monto + ' Pesos del ' + this.banco + ''
+          this.balance -= parseInt(this.monto)
+        }
+        console.log(this.transaction)
+        this.updateReport()
+      }
+
+      updateReport() {
+        this.dispatchEvent(new CustomEvent('updatereport', {
+          detail: {
+            transaction: this.transaction,
+            balance: this.balance
+          }
+        }));
+      }
+
+    }
+
+    window.customElements.define(BancoMexicano.is, BancoMexicano);
+  </script>
+</dom-module>
