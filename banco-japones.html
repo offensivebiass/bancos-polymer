@@ -13,6 +13,12 @@
     <button on-click="retirarDinero">Retirar</button>
 
     <h3 class="saldo">Saldo de la cuenta: ¥ [[balance]]</h3>
+    <template is="dom-if" if="{{pesos}}">
+      <h3 class="saldo">Saldo en Pesos Mx: $ [[pesos]]</h3>
+    </template>
+    <template is="dom-if" if="{{yuanes}}">
+      <h3 class="saldo">Saldo en Yuanes: ¥ [[yuanes]]</h3>
+    </template>
   </template>
 
   <script>
@@ -42,14 +48,28 @@
           },
           balance: {
             type: Number,
-            value: 0
+            value: 0,
+            observer: '_balanceChanged'
           },
           transaction: {
             type: String,
             value: '',
             notify: true
+          },
+          pesos: {
+            type: Number,
+            value: 0
+          },
+          yuanes: {
+            type: Number,
+            value: 0
           }
         };
+      }
+
+      _balanceChanged(newValue, oldValue) {
+        this.pesos = newValue * 2.79
+        this.yuanes = newValue * 0.068
       }
 
       depositarDinero() {
